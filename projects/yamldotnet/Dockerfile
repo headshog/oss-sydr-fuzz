@@ -19,7 +19,12 @@ FROM sydr/ubuntu20.04-sydr-fuzz
 RUN git clone https://github.com/aaubry/YamlDotNet.git && \
 	cd YamlDotNet && git checkout 19d7875b240c28516ef24c40485e29eaca9b9418
 
-COPY build.sh Program.cs fuzz.csproj yaml.dict /
+RUN git clone https://github.com/Metalnem/libfuzzer-dotnet.git && \
+	cd libfuzzer-dotnet && git checkout 4768f951b75d2aa78314abb9485fd1fc001ab036
+
+RUN clang -fsanitize=fuzzer /libfuzzer-dotnet/libfuzzer-dotnet.cc -o /usr/bin/libfuzzer-dotnet
+
+COPY build.sh ProgramAFL.cs ProgramLF.cs fuzz.csproj yaml.dict /
 
 WORKDIR /
 

@@ -27,10 +27,12 @@ public class Program
 {
     public static void Main(string[] args)
     {
-        Fuzzer.OutOfProcess.Run(stream =>
+        Fuzzer.LibFuzzer.Run(stream =>
         {
             try {
-                string yml = File.ReadAllText(args[0]);
+                string yml = "";
+                for (int i = 0; i < stream.Length; i++)
+                    yml += (char)stream[i];
                 var input = new StringReader(yml);
 
                 var yaml = new YamlStream();

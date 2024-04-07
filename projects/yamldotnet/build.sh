@@ -16,13 +16,23 @@
 ################################################################################
 
 
-# Make directories for fuzzing and coverage.
-mkdir -p /build_fuzz /build_cov
-cp /Program.cs /fuzz.csproj /build_fuzz
-cp /Program.cs /fuzz.csproj /build_cov
+# Make directories for fuzzing and coverage (AFL++).
+mkdir -p /afl_build_fuzz /afl_build_cov
+cp /ProgramAFL.cs /fuzz.csproj /afl_build_fuzz
+cp /ProgramAFL.cs /fuzz.csproj /afl_build_cov
 
-# Build target for fuzzing.
-cd /build_fuzz
+# Make directories for fuzzing and coverage (libfuzzer).
+mkdir -p /lf_build_fuzz /lf_build_cov
+cp /ProgramLF.cs /fuzz.csproj /lf_build_fuzz
+cp /ProgramLF.cs /fuzz.csproj /lf_build_cov
+
+# Build target for fuzzing (AFL++).
+cd /afl_build_fuzz
+dotnet publish fuzz.csproj -c release -o bin
+sharpfuzz bin/YamlDotNet.dll
+
+# Build target for fuzzing (libfuzzer).
+cd /lf_build_fuzz
 dotnet publish fuzz.csproj -c release -o bin
 sharpfuzz bin/YamlDotNet.dll
 
